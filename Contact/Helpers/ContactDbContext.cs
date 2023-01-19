@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Contact.Model
+﻿namespace ContactApi.Helpers
 {
+    using ContactApi.Entities;
+    using Microsoft.EntityFrameworkCore;
     public class ContactDbContext : DbContext
     {
         protected readonly IConfiguration Configuration;
@@ -14,6 +14,7 @@ namespace Contact.Model
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseNpgsql(Configuration.GetConnectionString("WebApiDatabase"));
+            base.OnConfiguring(options);
         }
 
         DbSet<Contact> Contacts { get; set; }

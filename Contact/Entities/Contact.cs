@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Contact.Model
+namespace ContactApi.Entities
 {
+    [Table("Contact")]
     public class Contact
     {
-        [Required]
+        [Key]
+        [Column("uuid")]        
         public Guid UUID { get; set; }
 
         public string Name { get; set; }

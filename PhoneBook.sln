@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contact", "Contact\Contact.csproj", "{FB3C5578-54B9-421C-B4D8-9107C3988F9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContactApi", "Contact\ContactApi.csproj", "{FB3C5578-54B9-421C-B4D8-9107C3988F9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Report", "Report\Report.csproj", "{799C090B-BF2E-4683-819D-B5B02601ECEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportApi", "Report\ReportApi.csproj", "{799C090B-BF2E-4683-819D-B5B02601ECEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
