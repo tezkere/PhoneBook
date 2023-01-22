@@ -9,7 +9,7 @@ namespace ContactApi.Model.Contact
         public string Name { get; set; }
 
         [Required]
-        public string SurName { get; set; }
+        public string Surname { get; set; }
 
         [Required]        
         public string Company { get; set; }           

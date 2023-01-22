@@ -2,7 +2,7 @@
 {
     #region using
     using System.ComponentModel.DataAnnotations;
-    
+
     #endregion
 
     public class CreateRequest
