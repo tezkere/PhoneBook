@@ -3,7 +3,7 @@ using System.Data;
 
 namespace ContactApi.Model.Contact
 {
-    public class CreateRequest
+    public class CreateRequestForContact
     {
         [Required]
         public string Name { get; set; }

@@ -2,8 +2,6 @@
 using ContactApi.Service;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace ContactApi.Controllers
 {
     [Route("api/[controller]")]
@@ -11,13 +9,14 @@ namespace ContactApi.Controllers
     public class ContactController : ControllerBase
     {
         IContactService _contactService;
-        public ContactController(IContactService service)
+        
+        public ContactController(IContactService contactService)
         {
-            _contactService = service;
+            _contactService = contactService;            
         }
 
         // GET: api/<ContactController>
-        [HttpGet]
+        [HttpGet("getAllContact")]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -32,8 +31,8 @@ namespace ContactApi.Controllers
         }
 
         // GET api/<ContactController>/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        [HttpGet("{id}",Name="ContactId")]
+        public async Task<IActionResult> GetContactId(Guid id)
         {
             try
             {
@@ -55,13 +54,13 @@ namespace ContactApi.Controllers
         }
 
         // POST api/<ContactController>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateRequest createRequest)
+        [HttpPost("createContact")]
+        public async Task<IActionResult> CreateContact([FromBody] CreateRequestForContact createRequest)
         {
             try
             {
                 var result = await _contactService.Create(createRequest);
-                return CreatedAtRoute("ContactId", new { id = result });
+                return CreatedAtRoute("ContactId", new { id = result.UUID }, result);
             }
             catch (Exception ex)
             {
@@ -70,7 +69,7 @@ namespace ContactApi.Controllers
         }
 
         // DELETE api/<ContactController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete("deleteContact/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
@@ -83,6 +82,21 @@ namespace ContactApi.Controllers
                 throw;
             }
 
+        }
+
+        // POST api/<ContactController>
+        [HttpPost("createContactInfo")]
+        public async Task<IActionResult> CreateContactInfo([FromBody] Model.ContactInfo.CreateRequestForContactInfo createRequest)
+        {
+            try
+            {
+                var result = await _contactService.CreateContactInfo(createRequest);
+                return Ok(result.UUID);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

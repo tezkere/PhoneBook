@@ -1,6 +1,6 @@
-﻿namespace ContactApi.Helpers
+﻿namespace ReportApi.Helpers
 {
-    using ContactApi.Entities;
+    using ReportApi.Entities;
     using Microsoft.EntityFrameworkCore;
     public class ReportDbContext : DbContext
     {

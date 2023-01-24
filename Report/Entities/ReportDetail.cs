@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static ContactApi.Shared.Enums;
 
-namespace ContactApi.Entities
+namespace ReportApi.Entities
 {
     [Table("ReportDetail")]
     public class ReportDetail

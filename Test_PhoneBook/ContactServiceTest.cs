@@ -33,7 +33,7 @@ namespace Test_PhoneBook
             var serviceMock = MockIContactService.GetMock();
             var contactController = new ContactController(serviceMock.Object);
             var id = Guid.Parse("0f8fad5b-d9cb-469f-a165-70867728950e");
-            var result = await contactController.Get(id);
+            var result = await contactController.GetContactId(id);
             var okObject = result as OkObjectResult;            
 
             Assert.NotNull(okObject);
@@ -48,7 +48,7 @@ namespace Test_PhoneBook
             var serviceMock = MockIContactService.GetMock();
             var contactController = new ContactController(serviceMock.Object); 
             var id = Guid.Parse("f4f4e3bf-afa6-4399-87b5-a3fe17572c4d");
-            var result = await contactController.Get(id);
+            var result = await contactController.GetContactId(id);
             var statusResult = result as StatusCodeResult;
             Assert.NotNull(statusResult);
             Assert.Equal(StatusCodes.Status404NotFound, statusResult.StatusCode);
@@ -60,14 +60,14 @@ namespace Test_PhoneBook
             var serviceMock = MockIContactService.GetMock();
             var contactController = new ContactController(serviceMock.Object);
 
-            var createRequest = new CreateRequest()
+            var createRequest = new CreateRequestForContact()
             {
                 Name = "TestName",
                 Surname = "TestSurName",
                 Company = "TestCompany"
             };
             
-            var result = await contactController.Post(createRequest);
+            var result = await contactController.CreateContact(createRequest);
             var objectRes = result as ObjectResult;
 
             Assert.NotNull(objectRes);
@@ -167,7 +167,7 @@ namespace Test_PhoneBook
                 mock.Setup(m => m.GetById(It.IsAny<Guid>()).Result)
                     .Returns((Guid id) => contacts.FirstOrDefault(o => o.UUID == id));
 
-                mock.Setup(m => m.Create(It.IsAny<CreateRequest>()))
+                mock.Setup(m => m.Create(It.IsAny<CreateRequestForContact>()))
                     .Callback(() => { return; });
 
                 mock.Setup(m => m.Delete(It.IsAny<Guid>()))

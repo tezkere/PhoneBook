@@ -1,4 +1,4 @@
-﻿namespace ContactApi.Shared
+﻿namespace ReportApi.Shared
 {
     public class Enums
     {

@@ -1,4 +1,4 @@
-﻿namespace ContactApi.Helpers;
+﻿namespace ReportApi.Helpers;
 
 using System.Globalization;
 

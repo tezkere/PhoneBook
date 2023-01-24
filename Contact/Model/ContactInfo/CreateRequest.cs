@@ -5,7 +5,7 @@
 
     #endregion
 
-    public class CreateRequest
+    public class CreateRequestForContactInfo
     {
         [Required]
         [EnumDataType(typeof(Shared.Enums.InfoTypes))]

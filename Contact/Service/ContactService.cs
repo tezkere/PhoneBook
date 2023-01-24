@@ -4,14 +4,18 @@
     using ContactApi.Entities;
     using ContactApi.Helpers;
     using ContactApi.Model.Contact;
+    using ContactApi.Model.ReportInfo;
     using Microsoft.EntityFrameworkCore;
 
     public interface IContactService
     {
         Task<IEnumerable<Contact>> GetAll();
         Task<Contact> GetById(Guid id);
-        Task<Guid> Create(CreateRequest model);
-        Task Delete(Guid id);        
+        Task<Contact> Create(CreateRequestForContact model);
+        Task Delete(Guid id);
+        Task<ContactInfo> CreateContactInfo(Model.ContactInfo.CreateRequestForContactInfo model);
+        Task DeleteContactInfo(Guid contactId, Guid id);
+        Task<ReportInfo> GetReportInfo();
 
     }
 
@@ -39,7 +43,7 @@
             _mapper = mapper;
         }
 
-        public async Task<Guid> Create(CreateRequest model)
+        public async Task<Contact> Create(CreateRequestForContact model)
         {
             // map model to new contact object
             var contact = _mapper.Map<Contact>(model);
@@ -48,12 +52,12 @@
 
             _context.Contacts.Add(contact);
             await _context.SaveChangesAsync();
-            return contact.UUID;
+            return contact;
         }       
 
         public async Task Delete(Guid id)
         {
-            var contact = await getContact(id);
+            var contact = await GetContact(id);
 
             foreach (var info in contact.ContactInfos)
             {
@@ -71,14 +75,52 @@
 
         public async Task<Contact> GetById(Guid id)
         {
-            return await getContact(id);
-        }       
+            return await GetContact(id);
+        }
 
-        private async Task<Contact> getContact(Guid id)
+        public  Task<ReportInfo> GetReportInfo()
+        {
+
+
+            //var res = _context.ContactInfos.Where(x => x.InfoType == Shared.Enums.InfoTypes.Location)
+            //                               .GroupBy(x => x.Info).Select(x => x.Key);
+
+
+                                           
+
+            return null;
+        }
+
+        public async Task<ContactInfo> CreateContactInfo(Model.ContactInfo.CreateRequestForContactInfo model)
+        {
+            var contactInfo = _mapper.Map<ContactInfo>(model);            
+
+            _context.ContactInfos.Add(contactInfo);
+            await _context.SaveChangesAsync();
+            return contactInfo;
+        }
+
+        public async Task DeleteContactInfo(Guid contactId, Guid id)
+        {
+            var contactInfo = await GetContactInfo(contactId, id);
+            _context.ContactInfos.Remove(contactInfo);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task<ContactInfo> GetContactInfo(Guid contactId, Guid id)
+        {
+            var contactInfo = await _context.ContactInfos.FirstOrDefaultAsync(x => x.ContactId == contactId && x.UUID == id);
+            if (contactInfo == null) throw new KeyNotFoundException("ContactInfo not found");
+            return contactInfo;
+        }
+
+        private async Task<Contact> GetContact(Guid id)
         {
             var contact = await _context.Contacts.Include(x => x.ContactInfos).FirstOrDefaultAsync(x => x.UUID == id);                
             if (contact == null) throw new KeyNotFoundException("Contact not found");
             return contact;
         }
+
+        
     }
 }
