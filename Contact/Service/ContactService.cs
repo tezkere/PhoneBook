@@ -10,7 +10,7 @@
     {
         Task<IEnumerable<Contact>> GetAll();
         Task<Contact> GetById(Guid id);
-        Task Create(CreateRequest model);
+        Task<Guid> Create(CreateRequest model);
         Task Delete(Guid id);        
 
     }
@@ -39,7 +39,7 @@
             _mapper = mapper;
         }
 
-        public async Task Create(CreateRequest model)
+        public async Task<Guid> Create(CreateRequest model)
         {
             // map model to new contact object
             var contact = _mapper.Map<Contact>(model);
@@ -48,6 +48,7 @@
 
             _context.Contacts.Add(contact);
             await _context.SaveChangesAsync();
+            return contact.UUID;
         }       
 
         public async Task Delete(Guid id)
