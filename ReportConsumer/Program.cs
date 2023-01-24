@@ -1,4 +1,6 @@
-﻿using RabbitMQ.Client;
+﻿using ContactApi.Entities;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
@@ -17,19 +19,12 @@ consumer.Received += (model, eventArgs) => {
     var message = Encoding.UTF8.GetString(body);
     Console.WriteLine($"ReportCreate message received: {message}");
 
-    //// User hizmetinden kullanıcı bilgisini al
-    //var client = new HttpClient();
-    //var userResponse = await client.GetAsync($"http://localhost:5171/api/contact/GetAll");
-    //var userJson = await userResponse.Content.ReadAsStringAsync();
-    //var user = JsonConvert.DeserializeObject<User>(userJson);
-
-    //// Kullanıcıya ait siparişleri al
-    //var orders = _context.Orders.Where(o => o.UserId == userId).ToList();
-
-    //// Kullanıcı bilgilerini sipariş bilgilerine ekle
-    //orders.ForEach(o => o.User = user);
-
-    //return Ok(orders);
+    // User hizmetinden kullanıcı bilgisini al
+    var client = new HttpClient();
+    var userResponse = client.GetAsync($"http://localhost:5171/api/contact/getAllContact").GetAwaiter().GetResult();
+    var userJson = userResponse.Content.ReadAsStringAsync().Result;
+    Console.WriteLine(userJson);
+    
 
 };
 //read the message

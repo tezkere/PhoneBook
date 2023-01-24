@@ -32,8 +32,8 @@ namespace ReportApi.Controllers
         }
 
         // GET api/<ReportController>/5
-        [HttpGet("get/{id}")]
-        public async Task<IActionResult> Get(Guid id)
+        [HttpGet("{id}",Name="ReportId")]
+        public async Task<IActionResult> GetReportId(Guid id)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace ReportApi.Controllers
             {
                 var result = await reportService.Create(reportDate);
                 rabbitMQProducer.SendReportCreateMessage("reportCreate");
-                return CreatedAtRoute("ReportId", new { id = result });
+                return CreatedAtRoute("ReportId", new { id = result.UUID }, result);
             }
             catch (Exception ex)
             {
