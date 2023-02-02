@@ -9,10 +9,10 @@ namespace ContactApi.Controllers
     public class ContactController : ControllerBase
     {
         IContactService _contactService;
-        
+
         public ContactController(IContactService contactService)
         {
-            _contactService = contactService;            
+            _contactService = contactService;
         }
 
         // GET: api/<ContactController>
@@ -30,22 +30,14 @@ namespace ContactApi.Controllers
             }
         }
 
-        // GET api/<ContactController>/5
-        [HttpGet("{id}",Name="ContactId")]
-        public async Task<IActionResult> GetContactId(Guid id)
+        // GET: api/<ContactController>
+        [HttpGet("getReport")]
+        public async Task<IActionResult> getReport()
         {
             try
             {
-                var contact = await _contactService.GetById(id);
-
-                if (contact is null)
-                {                    
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(contact);
-                }                
+                var report = await _contactService.GetReportInfo();
+                return await Task.FromResult(Ok(report));
             }
             catch (Exception ex)
             {
@@ -53,6 +45,28 @@ namespace ContactApi.Controllers
             }
         }
 
+        // GET api/<ContactController>/5
+        [HttpGet("{id}", Name = "ContactId")]
+        public async Task<IActionResult> GetContactId(Guid id)
+        {
+            try
+            {
+                var contact = await _contactService.GetById(id);
+
+                if (contact is null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(contact);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         // POST api/<ContactController>
         [HttpPost("createContact")]
         public async Task<IActionResult> CreateContact([FromBody] CreateRequestForContact createRequest)
@@ -61,6 +75,20 @@ namespace ContactApi.Controllers
             {
                 var result = await _contactService.Create(createRequest);
                 return CreatedAtRoute("ContactId", new { id = result.UUID }, result);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("createMultipleContact")]
+        public async Task<IActionResult> CreateMultipleContact([FromBody] List<CreateRequestForContact> createRequest)
+        {
+            try
+            {
+                var result = await _contactService.CreateMultiple(createRequest);
+                return CreatedAtRoute("ContactIds", new { id = result.First().UUID }, result);
             }
             catch (Exception ex)
             {
@@ -98,5 +126,7 @@ namespace ContactApi.Controllers
                 throw;
             }
         }
+
+
     }
 }

@@ -15,7 +15,7 @@ namespace ReportApi.Entities
 
         public ReportStatus Status { get; set; }
 
-        public virtual ReportDetail ReportDetail{ get; set; }
+        public virtual ICollection<ReportDetail> ReportDetails{ get; set; }
 
     }
 }

@@ -12,24 +12,14 @@
         Task<IEnumerable<Contact>> GetAll();
         Task<Contact> GetById(Guid id);
         Task<Contact> Create(CreateRequestForContact model);
+        Task<List<Contact>> CreateMultiple(List<CreateRequestForContact> model);
         Task Delete(Guid id);
         Task<ContactInfo> CreateContactInfo(Model.ContactInfo.CreateRequestForContactInfo model);
         Task DeleteContactInfo(Guid contactId, Guid id);
-        Task<ReportInfo> GetReportInfo();
+        Task<List<ReportInfo>> GetReportInfo();
 
     }
-
-    //  Rehberde kişi oluşturma ---- ok 
-    //• Rehberde kişi kaldırma --- ok 
-    //• Rehberdeki kişiye iletişim bilgisi ekleme -- ok 
-    //• Rehberdeki kişiden iletişim bilgisi kaldırma -- ok
-    //• Rehberdeki kişilerin listelenmesi -- ok
-    //• Rehberdeki bir kişiyle ilgili iletişim bilgilerinin de yer aldığı detay bilgilerin getirilmesi -- ok
-    //• Rehberdeki kişilerin bulundukları konuma göre istatistiklerini çıkartan bir rapor talebi
-    //• Sistemin oluşturduğu raporların listelenmesi
-    //• Sistemin oluşturduğu bir raporun detay bilgilerinin getirilmes
-
-
+   
     public class ContactService : IContactService
     {
         private ContactDbContext _context;
@@ -53,7 +43,19 @@
             _context.Contacts.Add(contact);
             await _context.SaveChangesAsync();
             return contact;
-        }       
+        }
+
+        public async Task<List<Contact>> CreateMultiple(List<CreateRequestForContact> model)
+        {
+            // map model to new contact object
+            var contacts = _mapper.Map<List<Contact>>(model);
+
+            // save contact
+
+            _context.Contacts.AddRange(contacts);
+            await _context.SaveChangesAsync();
+            return contacts;
+        }
 
         public async Task Delete(Guid id)
         {
@@ -78,22 +80,33 @@
             return await GetContact(id);
         }
 
-        public  Task<ReportInfo> GetReportInfo()
+        public async Task<List<ReportInfo>> GetReportInfo()
         {
+            var res = await _context.ContactInfos
+                .Include(x => x.Contact.ContactInfos.Where(x => x.InfoType == Shared.Enums.InfoTypes.Phone))
+                .Where(x => x.InfoType == Shared.Enums.InfoTypes.Location)
+                .GroupBy(x => x.Info)
+                .ToListAsync();
 
+            List<ReportInfo> infos = new List<ReportInfo>();
+            foreach (var locationInfo in res)
+            {
+                var info = new ReportInfo()
+                {
+                    LocationName = locationInfo.Key,
+                    ContactCount = locationInfo.Count(x => x.ContactId != Guid.Empty),
+                    PhoneCount = locationInfo.Count(x => x.Contact.ContactInfos.Where(y => y.InfoType == Shared.Enums.InfoTypes.Phone).Any())
+                };
 
-            //var res = _context.ContactInfos.Where(x => x.InfoType == Shared.Enums.InfoTypes.Location)
-            //                               .GroupBy(x => x.Info).Select(x => x.Key);
+                infos.Add(info);
+            }
 
-
-                                           
-
-            return null;
+            return infos;
         }
 
         public async Task<ContactInfo> CreateContactInfo(Model.ContactInfo.CreateRequestForContactInfo model)
         {
-            var contactInfo = _mapper.Map<ContactInfo>(model);            
+            var contactInfo = _mapper.Map<ContactInfo>(model);
 
             _context.ContactInfos.Add(contactInfo);
             await _context.SaveChangesAsync();
@@ -116,11 +129,10 @@
 
         private async Task<Contact> GetContact(Guid id)
         {
-            var contact = await _context.Contacts.Include(x => x.ContactInfos).FirstOrDefaultAsync(x => x.UUID == id);                
+            var contact = await _context.Contacts.Include(x => x.ContactInfos).FirstOrDefaultAsync(x => x.UUID == id);
             if (contact == null) throw new KeyNotFoundException("Contact not found");
             return contact;
         }
-
-        
+      
     }
 }

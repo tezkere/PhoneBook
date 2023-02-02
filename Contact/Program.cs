@@ -1,4 +1,3 @@
-using AutoMapper;
 using ContactApi.Helpers;
 using ContactApi.Service;
 using System.Text.Json.Serialization;
@@ -7,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<ContactDbContext>();
-builder.Services.AddSingleton<IContactService, ContactService>();
+builder.Services.AddScoped<IContactService, ContactService>();
 
 
 

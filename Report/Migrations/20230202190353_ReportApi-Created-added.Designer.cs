@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ReportApi.Helpers;
@@ -11,9 +12,11 @@ using ReportApi.Helpers;
 namespace ReportApi.Migrations
 {
     [DbContext(typeof(ReportDbContext))]
-    partial class ReportDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230202190353_ReportApi-Created-added")]
+    partial class ReportApiCreatedadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,7 +68,8 @@ namespace ReportApi.Migrations
 
                     b.HasKey("UUID");
 
-                    b.HasIndex("ReportId");
+                    b.HasIndex("ReportId")
+                        .IsUnique();
 
                     b.ToTable("ReportDetail");
                 });
@@ -73,8 +77,8 @@ namespace ReportApi.Migrations
             modelBuilder.Entity("ReportApi.Entities.ReportDetail", b =>
                 {
                     b.HasOne("ReportApi.Entities.Report", "Report")
-                        .WithMany("ReportDetails")
-                        .HasForeignKey("ReportId")
+                        .WithOne("ReportDetail")
+                        .HasForeignKey("ReportApi.Entities.ReportDetail", "ReportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -83,7 +87,8 @@ namespace ReportApi.Migrations
 
             modelBuilder.Entity("ReportApi.Entities.Report", b =>
                 {
-                    b.Navigation("ReportDetails");
+                    b.Navigation("ReportDetail")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

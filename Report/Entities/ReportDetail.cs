@@ -14,6 +14,7 @@ namespace ReportApi.Entities
         public int PhoneCount { get; set; }        
         public Guid ReportId { get; set; }
         public virtual Report Report { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
     }
 }

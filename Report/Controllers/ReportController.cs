@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ReportApi.Model;
 using ReportApi.Service;
 
 namespace ReportApi.Controllers
@@ -54,15 +55,14 @@ namespace ReportApi.Controllers
             }
         }
 
-
         // POST api/<ReportController>
         [HttpPost("createReport")]
-        public async Task<IActionResult> Post([FromBody] DateTime reportDate)
+        public async Task<IActionResult> CreateReport([FromBody] DateTime reportDate)
         {
             try
             {
                 var result = await reportService.Create(reportDate);
-                rabbitMQProducer.SendReportCreateMessage("reportCreate");
+                rabbitMQProducer.SendReportCreateMessage($"{result.UUID}");
                 return CreatedAtRoute("ReportId", new { id = result.UUID }, result);
             }
             catch (Exception ex)
@@ -71,6 +71,20 @@ namespace ReportApi.Controllers
             }
         }
 
+        // POST api/<ReportController>
+        [HttpPost("createReportDetail")]
+        public async Task<IActionResult> CreateReportDetail([FromBody] List<ReportInfo> reportInfo)
+        {
+            try
+            {
+                var result = await reportService.CreateReportDetail(reportInfo);               
+                return CreatedAtRoute("ReportDetails",new { id = result.First().ReportId }, result);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
     }
 }
