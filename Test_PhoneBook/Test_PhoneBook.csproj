@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Contact\ContactApi.csproj" />
+    <ProjectReference Include="..\Report\ReportApi.csproj" />
   </ItemGroup>
 
 </Project>

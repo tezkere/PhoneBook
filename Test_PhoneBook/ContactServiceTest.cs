@@ -167,8 +167,8 @@ namespace Test_PhoneBook
                 mock.Setup(m => m.GetById(It.IsAny<Guid>()).Result)
                     .Returns((Guid id) => contacts.FirstOrDefault(o => o.UUID == id));
 
-                mock.Setup(m => m.Create(It.IsAny<CreateRequestForContact>()))
-                    .Callback(() => { return; });
+                mock.Setup(m => m.Create(It.IsAny<CreateRequestForContact>()).Result)
+                    .Returns(() => contacts.FirstOrDefault());
 
                 mock.Setup(m => m.Delete(It.IsAny<Guid>()))
                    .Callback(() => { return; });
